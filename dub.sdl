@@ -1,0 +1,8 @@
+name "srl"
+description "A minimal D application."
+authors "mensi"
+copyright "Copyright © 2022, mensi"
+license "proprietary"
+dependency "raylib-d" version="~>4.0.1"
+dependency "wren-port" version="~>1.1.3"
+libs "raylibdll"

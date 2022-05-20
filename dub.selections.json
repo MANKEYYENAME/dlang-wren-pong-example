@@ -1,0 +1,14 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"ddmp": "0.0.1-0.dev.3",
+		"dplug": "12.6.0",
+		"fluent-asserts": "0.13.3",
+		"intel-intrinsics": "1.10.2",
+		"libdparse": "0.14.0",
+		"raylib-d": "4.0.1",
+		"stdx-allocator": "2.77.5",
+		"vox": "0.2.0",
+		"wren-port": "1.1.3"
+	}
+}

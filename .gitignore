@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/srl
+srl.so
+srl.dylib
+srl.dll
+srl.exe
+srl.pdb
+srl.a
+srl.lib
+srl-test-*
+*.exe
+*.o
+*.obj
+*.lst
