@@ -284,20 +284,24 @@ class Main {
     }
 
     draw() {
-        if(_drawIntro) {
-            Renderer.drawText(Screen.introText, Screen.width * 0.5, 60, 20)
-            for(x in 0..9){ 
-                for(y in 0..9){
+            for(x in 1..10){ 
+                for(y in 1..10){
+                    var radius = 5
                     var xpos = x * Screen.width * 0.1 + y
                     var ypos = y * Screen.width * 0.1 - x
-                    xpos = xpos + ((_globTimer + y).cos * 50) 
-                    ypos = ypos + ((_globTimer + x).cos * 50) 
-                    xpos = xpos + _globTimer * Screen.width * 0.2
+                    xpos = xpos + ((_globTimer * 2 + y).cos * 50) 
+                    ypos = ypos + ((_globTimer * 2 + x).cos * 50) 
+                    radius = radius * (_globTimer * 5 + x * y).cos
+                    radius = radius + 1
+                    ypos = ypos + _globTimer * Screen.height * 0.1
                     xpos = xpos % (Screen.width + 5)
                     ypos = ypos % (Screen.height + Screen.barSize + 5)
-                    Renderer.drawCircle(xpos, ypos, 5)
+                    if(!_drawIntro && ypos > Screen.height) radius = 0 
+                    Renderer.drawCircle(xpos, ypos, radius)
                 }
             }   
+        if(_drawIntro) {
+            Renderer.drawText(Screen.introText, Screen.width * 0.5, 60, 20)
         } else {
             _player.draw()
             _player2.draw()
