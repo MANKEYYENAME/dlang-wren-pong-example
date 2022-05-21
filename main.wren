@@ -34,8 +34,8 @@ class Player {
     }
     speed {_speed}
     speed=(a) {_speed = a}
-    width {50}
-    height {200}
+    width {20}
+    height {80}
     x {_x}
     x=(a) {_x = a}
 
@@ -83,7 +83,7 @@ class Ball {
     startSpeed {500}
     speed {_speed}
     speed=(a) {_speed = a}
-    radius {30}
+    radius {10}
     vely {_vely}
     vely=(a) {_vely = a}
     velx {_velx}
@@ -96,6 +96,7 @@ class Ball {
     construct new() {
         _velx = 1
         _vely = 0.5
+        _time = 0
         reset()
     }
 
@@ -104,17 +105,20 @@ class Ball {
             checkPlayer(p)
         }
         checkWallY()
+        _time = _time + delta
         _x = _x + velx * delta * speed
         _y = _y + vely * delta * speed
     }
 
     draw() {
         Renderer.drawCircle(x, y, radius)
+        Renderer.drawCircle(x - velx * speed * 5 * 0.005, y - vely * speed * 0.005, radius * 0.5)
     }
 
     reset() {
         _x = Screen.width * 0.5
-        _y = Screen.height * 0.5
+        _y = (_time % 0.3 + 0.3) * Screen.height
+        velx = -velx
         speed = startSpeed
     }
 
@@ -125,8 +129,8 @@ class Ball {
             velx = -velx
             if(this.x < p.x) this.x = p.x - radius
             if(this.x > p.x) this.x = p.x + p.width + radius
-            speed = speed * 1.02
-            p.speed = p.speed * 1.02
+            speed = speed * 1.1
+            p.speed = p.speed * 1.1
         }
     }
 
@@ -207,11 +211,13 @@ class Main {
 
         _ball = Ball.new()
 
+        _globTimer = 0
         _state = Fn.new{|delta| introUpdate(delta)}
     }
 
     introUpdate(delta) {
         _drawIntro = true
+
         if(Input.isDown("KEY_SPACE")) {
             _drawIntro = false
             _gameTimer = 0.0
@@ -227,11 +233,11 @@ class Main {
         _player.input(delta, "KEY_W", "KEY_S")
         _player2.input(delta, "KEY_UP", "KEY_DOWN")
 
-        if(_ball.x > Screen.width) {
+        if(_ball.x - _ball.radius * 5 > Screen.width) {
             reset()
             _player.incCount()
         }
-        if(_ball.x < 0) {
+        if(_ball.x + _ball.radius * 5 < 0) {
             reset()
             _player2.incCount()
         }
@@ -241,20 +247,21 @@ class Main {
             initPlayer(_player2, true)
         }
         if(Input.isDown("KEY_TWO")) {
-            _player2 = Computer.new(0.5) 
-            initPlayer(_player2, true)
-        }
-        if(Input.isDown("KEY_THREE")) {
             _player2 = Computer.new(0.25) 
             initPlayer(_player2, true)
         }
-        if(Input.isDown("KEY_FOUR")) {
+        if(Input.isDown("KEY_THREE")) {
             _player2 = Computer.new(0.1) 
+            initPlayer(_player2, true)
+        }
+        if(Input.isDown("KEY_FOUR")) {
+            _player2 = Computer.new(0.05) 
             initPlayer(_player2, true)
         }
     }
 
     update(delta) {
+        _globTimer = _globTimer + delta
         _state.call(delta)
     }
 
@@ -279,6 +286,18 @@ class Main {
     draw() {
         if(_drawIntro) {
             Renderer.drawText(Screen.introText, Screen.width * 0.5, 60, 20)
+            for(x in 0..9){ 
+                for(y in 0..9){
+                    var xpos = x * Screen.width * 0.1 + y
+                    var ypos = y * Screen.width * 0.1 - x
+                    xpos = xpos + ((_globTimer + y).cos * 50) 
+                    ypos = ypos + ((_globTimer + x).cos * 50) 
+                    xpos = xpos + _globTimer * Screen.width * 0.2
+                    xpos = xpos % (Screen.width + 5)
+                    ypos = ypos % (Screen.height + Screen.barSize + 5)
+                    Renderer.drawCircle(xpos, ypos, 5)
+                }
+            }   
         } else {
             _player.draw()
             _player2.draw()
